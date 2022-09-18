@@ -50,8 +50,12 @@ $FirefoxDriver.Close()
 $FirefoxDriver.Quit()
 
 
-$s -imatch '(?ims)globalRank\"\:(\d+?),' > $null
+$m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.+?countryRank\"\:(\d*?)\,'
 
-Write-Host $args[0] 'Global rank:' $Matches[1]
-
+if ($m) {
+    Write-Host $args[0] 'Global rank:' $Matches[1]
+    Write-Host $args[0] $Matches[3] 'rank:' $Matches[2]
+} else {
+    Write-Host $args[0] 'not ranked'
+}
 
