@@ -54,7 +54,7 @@ $m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.+?countryUrlCode\"\:\"(.*?)\".+?co
 
 if ($m) {
     Write-Host $args[0] 'Global rank:' $Matches[1]
-    Write-Host $args[0] $Matches[3] 'rank:' $Matches[2]
+    Write-Host $args[0] (Get-Culture).TextInfo.ToTitleCase($Matches[2]) 'rank:' $Matches[3]
 } else {
     Write-Host $args[0] 'not ranked'
 }
