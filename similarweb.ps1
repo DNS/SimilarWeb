@@ -2,23 +2,23 @@
 <# 
 Requirements (always use the latest version):
     Firefox - https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=win64&lang=en-US
-    geckodriver.exe - 
-        https://github.com/mozilla/geckodriver/releases/latest
-            https://github.com/mozilla/geckodriver/releases/tag/v0.31.0
-                https://github.com/mozilla/geckodriver/releases/download/v0.31.0/geckodriver-v0.31.0-win64.zip
+    geckodriver.exe - https://github.com/mozilla/geckodriver/releases/latest
     WebDriver.dll - https://www.nuget.org/api/v2/package/Selenium.WebDriver/
-
-
 #> 
 
-#Import-Module 'D:\BIN\WebDriver.dll'
-Import-Module '.\WebDriver.dll'
+Import-Module 'D:\BIN\WebDriver.dll'
+#Import-Module '.\WebDriver.dll'
 
 Clear-Host
 
+if (-not $args[0]) {
+    Write-Host "usage:`n    .\similarweb.ps1 website.com"
+    exit
+}
+
 $FirefoxOptions = New-Object OpenQA.Selenium.Firefox.FirefoxOptions
 $FirefoxOptions.AcceptInsecureCertificates = $true
-#$FirefoxOptions.AddArgument('--headless')
+$FirefoxOptions.AddArgument('--headless')   # hide browser window
 
 # 0: Unknown, 1: Allow, 2: Deny, 3: Prompt action
 $FirefoxOptions.SetPreference('permissions.default.camera', 2)
@@ -38,16 +38,20 @@ $FirefoxOptions.SetPreference('media.autoplay.default', 5)
 $FirefoxDriver = New-Object OpenQA.Selenium.Firefox.FirefoxDriver -ArgumentList $FirefoxOptions 
 
 
-$FirefoxDriver.Url = 'https://www.similarweb.com/website/matahari.com/'
+$FirefoxDriver.Url = 'https://www.similarweb.com/website/' + $args[0]
 
 
+$s = $FirefoxDriver.PageSource
+#Write-Host $FirefoxDriver.PageSource
 
-Write-Host $FirefoxDriver.PageSource
-
-Start-Sleep -Seconds 10
+#Start-Sleep -Seconds 10
 
 $FirefoxDriver.Close()
 $FirefoxDriver.Quit()
 
+
+$s -imatch '(?ims)globalRank\"\:(\d+?),' > $null
+
+Write-Host $args[0] 'Global rank:' $Matches[1]
 
 
