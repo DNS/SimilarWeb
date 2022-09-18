@@ -3,7 +3,7 @@ PowerShell script to get SimilarWeb website rank.
 
 Usage from PowerShell:
 ```
-PS C:\> .\similarweb.ps1  matahari.com
+PS C:\> .\similarweb.ps1 matahari.com
 matahari.com Global rank: 94968
 matahari.com Indonesia rank: 2472
 ```
