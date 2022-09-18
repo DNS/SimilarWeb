@@ -9,7 +9,7 @@ Requirements (always use the latest version):
 Import-Module 'D:\BIN\WebDriver.dll'
 #Import-Module '.\WebDriver.dll'
 
-Clear-Host
+#Clear-Host
 
 if (-not $args[0]) {
     Write-Host "usage:`n    .\similarweb.ps1 website.com"
@@ -34,12 +34,9 @@ $FirefoxOptions.SetPreference('media.autoplay.block-webaudio', $true)
 $FirefoxOptions.SetPreference('media.autoplay.blocking_policy', 2)
 $FirefoxOptions.SetPreference('media.autoplay.default', 5)
 
-
 $FirefoxDriver = New-Object OpenQA.Selenium.Firefox.FirefoxDriver -ArgumentList $FirefoxOptions 
 
-
 $FirefoxDriver.Url = 'https://www.similarweb.com/website/' + $args[0]
-
 
 $s = $FirefoxDriver.PageSource
 #Write-Host $FirefoxDriver.PageSource
