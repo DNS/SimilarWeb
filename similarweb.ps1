@@ -50,7 +50,7 @@ $FirefoxDriver.Close()
 $FirefoxDriver.Quit()
 
 
-$m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.+?countryRank\"\:(\d*?)\,'
+$m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.+?countryUrlCode\"\:\"(.*?)\".+?countryRank\"\:(\d*?)\,'
 
 if ($m) {
     Write-Host $args[0] 'Global rank:' $Matches[1]
