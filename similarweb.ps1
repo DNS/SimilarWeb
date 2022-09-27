@@ -6,8 +6,11 @@ Requirements (always use the latest version):
     WebDriver.dll - https://www.nuget.org/api/v2/package/Selenium.WebDriver/
 #> 
 
+#[System.Reflection.Assembly]::LoadFrom('D:\BIN\WebDriver.dll')
 Import-Module 'D:\BIN\WebDriver.dll'
 #Import-Module '.\WebDriver.dll'
+
+
 
 #Clear-Host
 
@@ -18,6 +21,13 @@ if (-not $args[0]) {
 
 $FirefoxOptions = New-Object OpenQA.Selenium.Firefox.FirefoxOptions
 $FirefoxOptions.AcceptInsecureCertificates = $true
+
+# Sets GeckoDriver log level to Fatal
+$FirefoxOptions.LogLevel = [OpenQA.Selenium.Firefox.FirefoxDriverLogLevel]::Error
+$FirefoxOptions.AddArgument('--log-level 1')
+
+
+#$FirefoxOptions.AddArgument('> NUL')
 $FirefoxOptions.AddArgument('--headless')   # hide browser window
 
 # 0: Unknown, 1: Allow, 2: Deny, 3: Prompt action
@@ -34,7 +44,7 @@ $FirefoxOptions.SetPreference('media.autoplay.block-webaudio', $true)
 $FirefoxOptions.SetPreference('media.autoplay.blocking_policy', 2)
 $FirefoxOptions.SetPreference('media.autoplay.default', 5)
 
-$FirefoxDriver = New-Object OpenQA.Selenium.Firefox.FirefoxDriver -ArgumentList $FirefoxOptions 
+$FirefoxDriver = New-Object OpenQA.Selenium.Firefox.FirefoxDriver -ArgumentList $FirefoxOptions
 
 $FirefoxDriver.Url = 'https://www.similarweb.com/website/' + $args[0]
 
@@ -47,7 +57,7 @@ $FirefoxDriver.Close()
 $FirefoxDriver.Quit()
 
 
-$m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.+?countryUrlCode\"\:\"(.*?)\".+?countryRank\"\:(\d*?)\,'
+$m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.*?countryUrlCode\"\:\"(.*?)\"\,.*?countryRank\"\:(\d*?)\,'
 
 if ($m) {
     Write-Host $args[0] 'Global rank:' $Matches[1]
