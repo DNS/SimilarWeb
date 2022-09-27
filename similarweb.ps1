@@ -46,36 +46,37 @@ $FirefoxOptions.SetPreference('media.autoplay.default', 5)
 
 $FirefoxDriver = New-Object OpenQA.Selenium.Firefox.FirefoxDriver -ArgumentList $FirefoxOptions
 
-$FirefoxDriver.Url = 'https://www.similarweb.com/website/' + $args[0]
-
-$s = $FirefoxDriver.PageSource
-#Write-Host $FirefoxDriver.PageSource
-
-#Start-Sleep -Seconds 10
-
-$FirefoxDriver.Close()
-$FirefoxDriver.Quit()
-
-
-$m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.*?countryUrlCode\"\:\"(.*?)\"\,.*?countryRank\"\:(\d*?)\,'
-
 $result =  [System.Collections.ArrayList] @()
 
-$args
+function GetPageSource ($w) {
+    $FirefoxDriver.Url = 'https://www.similarweb.com/website/' + $w
+    $s = $FirefoxDriver.PageSource
 
-if ($m) {
-    $h = [ordered] @{
-        'Website'      = $args[0];
-        'Global Rank'  = $Matches[1];
-        'Country'      = (Get-Culture).TextInfo.ToTitleCase($Matches[2]);
-        'Country Rank' = $Matches[3];
+    $m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.*?countryUrlCode\"\:\"(.*?)\"\,.*?countryRank\"\:(\d*?)\,'
+
+    if ($m) {
+        $h = [ordered] @{
+            'Website'      = $w;
+            'Global Rank'  = $Matches[1];
+            'Country'      = (Get-Culture).TextInfo.ToTitleCase($Matches[2]);
+            'Country Rank' = $Matches[3];
+        }
+
+        $result.Add( [pscustomobject] $h ) > $null
+
+    } else {
+        Write-Host $w 'not ranked'
     }
-
-    $result.Add( [pscustomobject] $h ) > $null
-
-} else {
-    Write-Host $args[0] 'not ranked'
+    #Start-Sleep 3
 }
 
 
+foreach ($w in $args) {
+    GetPageSource($w)
+}
+
 $result
+
+
+$FirefoxDriver.Close()
+$FirefoxDriver.Quit()
