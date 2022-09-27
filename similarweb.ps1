@@ -59,10 +59,21 @@ $FirefoxDriver.Quit()
 
 $m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.*?countryUrlCode\"\:\"(.*?)\"\,.*?countryRank\"\:(\d*?)\,'
 
+$result =  [System.Collections.ArrayList] @()
+
 if ($m) {
-    Write-Host $args[0] 'Global rank:' $Matches[1]
-    Write-Host $args[0] (Get-Culture).TextInfo.ToTitleCase($Matches[2]) 'rank:' $Matches[3]
+    #Write-Host $args[0] 'Global rank:' $Matches[1]
+    #Write-Host $args[0] (Get-Culture).TextInfo.ToTitleCase($Matches[2]) 'rank:' $Matches[3]
+    $h = @{}
+    $h['Website'] = $args[0]
+    $h['Global Rank'] = $Matches[1]
+    $h['Country'] = (Get-Culture).TextInfo.ToTitleCase($Matches[2])
+    $h['Country Rank'] = $Matches[3]
+    $result.Add( [pscustomobject] $h ) > $null
+
 } else {
     Write-Host $args[0] 'not ranked'
 }
 
+
+$result
