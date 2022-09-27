@@ -61,14 +61,16 @@ $m = $s -imatch '(?ims)globalRank\"\:(\d+?)\,.*?countryUrlCode\"\:\"(.*?)\"\,.*?
 
 $result =  [System.Collections.ArrayList] @()
 
+$args
+
 if ($m) {
-    #Write-Host $args[0] 'Global rank:' $Matches[1]
-    #Write-Host $args[0] (Get-Culture).TextInfo.ToTitleCase($Matches[2]) 'rank:' $Matches[3]
-    $h = @{}
-    $h['Website'] = $args[0]
-    $h['Global Rank'] = $Matches[1]
-    $h['Country'] = (Get-Culture).TextInfo.ToTitleCase($Matches[2])
-    $h['Country Rank'] = $Matches[3]
+    $h = [ordered] @{
+        'Website'      = $args[0];
+        'Global Rank'  = $Matches[1];
+        'Country'      = (Get-Culture).TextInfo.ToTitleCase($Matches[2]);
+        'Country Rank' = $Matches[3];
+    }
+
     $result.Add( [pscustomobject] $h ) > $null
 
 } else {
